@@ -1,0 +1,73 @@
+openapi: 3.0.1
+info:
+    title: URL Shortener API
+    version: 1.0.0
+    description: API for shortening and managing URLs.
+servers:
+    - url: http://localhost:3000
+      description: Local server
+paths:
+    /urls:
+        post:
+            summary: Create a shortened URL
+            tags:
+                - URLs
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                url:
+                                    type: object
+                                    properties:
+                                        long_url:
+                                            type: string
+                                            example: "https://www.google.com"
+            responses:
+                "201":
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    long_url:
+                                        type: string
+                                        example: "https://example.com"
+                                    short_url:
+                                        type: string
+                                        example: "abc123"
+                "401":
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: "Token is invalid or missing."
+    /urls/{short_url}:
+        get:
+            tags:
+                - URLs
+            parameters:
+                - name: url
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: The shortened URL code
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    long_url:
+                                        type: string
+                                        example: "https://example.com"
+                "404":
+                    description: URL not found
